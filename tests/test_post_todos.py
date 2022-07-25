@@ -1,12 +1,5 @@
 import json
-
 import requests
-import random
-
-from jsonschema import validate
-from jsonschema.exceptions import ValidationError
-
-from tests import schemas
 
 
 def test_post_todo_status_code():
