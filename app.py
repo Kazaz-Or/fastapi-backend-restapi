@@ -52,7 +52,5 @@ async def create_todo(todo: Todo, db: Session = Depends(get_db)):
     db.add(todo_model)
     db.commit()
 
-    return {
-        'status': 201,
-        'transaction': 'Successful'
-    }
+    return {'status': 201, 'transaction': 'Successful'}, \
+           f'id: {todo_model.id}'

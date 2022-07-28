@@ -13,7 +13,6 @@ def test_post_todo_status_code():
                              data=payload)
 
     assert response.status_code == 201
-    assert response.text == '{"status":201,"transaction":"Successful"}'
 
 
 def test_post_todo_by_id_content_type_header_response_value():
@@ -38,7 +37,6 @@ def test_post_todo_missing_optional_field_description():
                              data=payload)
 
     assert response.status_code == 201
-    assert response.text == '{"status":201,"transaction":"Successful"}'
 
 
 def test_post_todo_missing_required_field_title():
@@ -88,7 +86,6 @@ def test_post_todo_autoconvert_to_the_expected_type_priority_string():
                              data=payload)
 
     assert response.status_code == 201
-    assert response.text == '{"status":201,"transaction":"Successful"}'
 
 
 def test_post_todo_autoconvert_to_the_expected_type_complete_string():
@@ -102,7 +99,6 @@ def test_post_todo_autoconvert_to_the_expected_type_complete_string():
                              data=payload)
 
     assert response.status_code == 201
-    assert response.text == '{"status":201,"transaction":"Successful"}'
 
 
 def test_post_todo_autoconvert_to_the_expected_type_title_int():
@@ -116,7 +112,6 @@ def test_post_todo_autoconvert_to_the_expected_type_title_int():
                              data=payload)
 
     assert response.status_code == 201
-    assert response.text == '{"status":201,"transaction":"Successful"}'
 
 
 def test_post_todo_special_special_chars():
@@ -130,7 +125,6 @@ def test_post_todo_special_special_chars():
                              data=payload)
 
     assert response.status_code == 201
-    assert response.text == '{"status":201,"transaction":"Successful"}'
 
 
 def test_post_todo_special_spaces():
@@ -144,7 +138,6 @@ def test_post_todo_special_spaces():
                              data=payload)
 
     assert response.status_code == 201
-    assert response.text == '{"status":201,"transaction":"Successful"}'
 
 
 def test_post_todo_priority_less_than_1():
