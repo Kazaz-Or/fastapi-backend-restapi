@@ -28,6 +28,9 @@ uvicorn app:app --reload --port <PORT>
 You can browse the services docs (swagger) by browsing to the `url:port/docs`
 
 
+![New Project](https://user-images.githubusercontent.com/83350680/183468795-6745ebbc-0380-41f1-aa19-674a23be9a4a.png)
+
+
 
 <h4>This Project Covers:</h4>
 
