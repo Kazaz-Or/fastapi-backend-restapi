@@ -1,4 +1,3 @@
-from pyexpat import model
 from fastapi import FastAPI, Depends
 
 from sqlalchemy.orm import Session
@@ -8,6 +7,7 @@ from typing import Optional
 import models
 from db import engine, SessionLocal
 from exceptions import http_exception
+from auth import get_current_user, get_user_exception
 
 app = FastAPI()
 
@@ -34,21 +34,33 @@ async def get_all_todos(db: Session = Depends(get_db)):
     return db.query(models.Todos).all()
 
 
+@app.get('/todos/user')
+async def get_all_by_user(user: dict = Depends(get_current_user), db: Session = Depends(get_db)):
+    if user is None:
+        raise get_user_exception()
+    return db.query(models.Todos).filter(models.Todos.owner_id == user.get("id")).all()
+
+
 @app.get('/todo/{todo_id}')
-async def get_todo(todo_id: int, db: Session = Depends(get_db)):
-    todo_model = db.query(models.Todos).filter(models.Todos.id == todo_id).first()
+async def get_todo(todo_id: int, user: dict = Depends(get_current_user), db: Session = Depends(get_db)):
+    if user is None:
+        raise get_user_exception()
+    todo_model = db.query(models.Todos).filter(models.Todos.id == todo_id).filter(models.Todos.owner_id == user.get("id")).first()
     if todo_model is not None:
         return todo_model
     raise http_exception()
 
 
 @app.post('/todo', status_code=201)
-async def create_todo(todo: Todo, db: Session = Depends(get_db)):
+async def create_todo(todo: Todo, user: dict = Depends(get_current_user), db: Session = Depends(get_db)):
+    if user is None:
+        raise get_user_exception()
     todo_model = models.Todos()
     todo_model.title = todo.title
     todo_model.description = todo.description
     todo_model.priority = todo.priority
     todo_model.complete = todo.complete
+    todo_model.owner_id = user.get("id")
 
     db.add(todo_model)
     db.commit()
@@ -58,8 +70,10 @@ async def create_todo(todo: Todo, db: Session = Depends(get_db)):
 
 
 @app.put('/todo/{todo_id}', status_code=200)
-async def update_todo(todo_id: int, todo: Todo, db: Session = Depends(get_db)):
-    todo_model = db.query(models.Todos).filter(models.Todos.id == todo_id).first()
+async def update_todo(todo_id: int, todo: Todo, user: dict = Depends(get_current_user), db: Session = Depends(get_db)):
+    if user is None:
+        raise get_user_exception()
+    todo_model = db.query(models.Todos).filter(models.Todos.id == todo_id).filter(models.Todos.owner_id == user.get("id")).first()
     if todo_model is None:
         raise http_exception
     
@@ -75,8 +89,10 @@ async def update_todo(todo_id: int, todo: Todo, db: Session = Depends(get_db)):
 
 
 @app.delete('/todo/{todo_id}', status_code=200)
-async def delete_todo(todo_id: int, db: Session = Depends(get_db)):
-    todo_model = db.query(models.Todos).filter(models.Todos.id == todo_id).first()
+async def delete_todo(todo_id: int, user: dict = Depends(get_current_user), db: Session = Depends(get_db)):
+    if user is None:
+        raise get_user_exception()
+    todo_model = db.query(models.Todos).filter(models.Todos.id == todo_id).filter(models.Todos.owner_id == user.get("id")).first()
     if todo_model is None:
         raise http_exception
     
